@@ -1,10 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Loader2, Send } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Loader2, Send, CalendarDays, CalendarRange } from 'lucide-react'
+import type { DateRange } from '@/hooks/use-dashboard'
 
 interface Champion {
   winners: string[]
@@ -20,7 +22,9 @@ interface AwardsTabProps {
   isDrawing: boolean
   showWinner: boolean
   topSenders: { from_name: string; count: number }[]
+  dateRange: DateRange | null
   onMonthChange: (month: string) => void
+  onDateRangeChange: (range: DateRange | null) => void
   onDraw: () => void
 }
 
@@ -33,15 +37,68 @@ export function AwardsTab({
   isDrawing,
   showWinner,
   topSenders,
+  dateRange,
   onMonthChange,
+  onDateRangeChange,
   onDraw,
 }: AwardsTabProps) {
+  const [filterMode, setFilterMode] = useState<'month' | 'range'>(dateRange ? 'range' : 'month')
+  const [rangeStart, setRangeStart] = useState(dateRange?.start || '')
+  const [rangeEnd, setRangeEnd] = useState(dateRange?.end || '')
+
+  const handleApplyRange = () => {
+    if (rangeStart && rangeEnd) {
+      onDateRangeChange({
+        start: new Date(rangeStart + 'T00:00:00').toISOString(),
+        end: new Date(rangeEnd + 'T23:59:59').toISOString(),
+      })
+    }
+  }
+
+  const handleSwitchToMonth = () => {
+    setFilterMode('month')
+    onDateRangeChange(null)
+    onMonthChange(selectedMonth)
+  }
+
+  const handleSwitchToRange = () => {
+    setFilterMode('range')
+  }
+
+  const formatRangeLabel = () => {
+    if (!dateRange) return ''
+    const start = new Date(dateRange.start)
+    const end = new Date(dateRange.end)
+    return `${start.toLocaleDateString('pt-BR')} - ${end.toLocaleDateString('pt-BR')}`
+  }
+
   return (
     <div className="space-y-8">
-      {/* Champions Section */}
+      {/* Filter controls */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-foreground">Campeões do Mês</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold text-foreground text-balance">Campeoes do Periodo</h2>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={filterMode === 'month' ? 'default' : 'outline'}
+              size="sm"
+              onClick={handleSwitchToMonth}
+            >
+              <CalendarDays className="w-4 h-4 mr-1.5" />
+              Mes
+            </Button>
+            <Button
+              variant={filterMode === 'range' ? 'default' : 'outline'}
+              size="sm"
+              onClick={handleSwitchToRange}
+            >
+              <CalendarRange className="w-4 h-4 mr-1.5" />
+              Periodo
+            </Button>
+          </div>
+        </div>
+
+        {filterMode === 'month' ? (
           <select
             value={selectedMonth}
             onChange={(e) => onMonthChange(e.target.value)}
@@ -58,8 +115,44 @@ export function AwardsTab({
               )
             })}
           </select>
-        </div>
-        
+        ) : (
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground font-medium">De</label>
+              <Input
+                type="date"
+                value={rangeStart}
+                onChange={(e) => setRangeStart(e.target.value)}
+                className="w-auto"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-muted-foreground font-medium">Ate</label>
+              <Input
+                type="date"
+                value={rangeEnd}
+                onChange={(e) => setRangeEnd(e.target.value)}
+                className="w-auto"
+              />
+            </div>
+            <Button
+              size="sm"
+              onClick={handleApplyRange}
+              disabled={!rangeStart || !rangeEnd}
+            >
+              Aplicar
+            </Button>
+            {dateRange && (
+              <p className="text-xs text-muted-foreground self-center">
+                Filtrando: {formatRangeLabel()}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Champions grid */}
+      <div className="mb-8">
         <p className="text-muted-foreground mb-4 text-sm">Pessoas que mais receberam feedbacks em cada categoria</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.entries(champions).map(([category, champion]: [string, any]) => (
@@ -80,17 +173,17 @@ export function AwardsTab({
                   ))}
                   {champion.winners.length > 1 && (
                     <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mt-3 pt-3 border-t border-border">
-                      Empate! Ambos ganham o prêmio desta categoria
+                      Empate! Ambos ganham o premio desta categoria
                     </p>
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground italic">Nenhum feedback aprovado ainda nesta categoria</p>
+                <p className="text-muted-foreground italic">Nenhum feedback aprovado neste periodo</p>
               )}
             </Card>
           ))}
 
-          {/* Mais Envios card — same visual pattern as category cards */}
+          {/* Top senders card */}
           {topSenders.length > 0 && (
             <Card className="p-6">
               <div className="mb-4">
@@ -101,7 +194,7 @@ export function AwardsTab({
               </div>
               <div className="space-y-3">
                 {topSenders.slice(0, 3).map((sender, index) => {
-                  const medals = ['🥇', '🥈', '🥉']
+                  const medals = ['\u{1F947}', '\u{1F948}', '\u{1F949}']
                   return (
                     <div key={sender.from_name} className="flex items-baseline justify-between">
                       <p className="text-xl font-bold text-foreground flex items-center gap-2">
@@ -123,34 +216,31 @@ export function AwardsTab({
 
       {/* Random Draw Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-foreground mb-6">Sorteio do Mês</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">Sorteio</h2>
         <Card className="p-8">
           {showWinner && randomFeedback ? (
             <div className="flex flex-col md:flex-row gap-6 items-center">
-              {/* Image Section */}
               {randomFeedback.photo_url && (
                 <div className="flex-shrink-0">
                   <img
-                    src={randomFeedback.photo_url || "/placeholder.svg"}
+                    src={randomFeedback.photo_url || '/placeholder.svg'}
                     alt="Feedback do sorteado"
                     className="w-64 h-64 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity border-4 border-primary/20"
                     onClick={() => {
-                      const fullscreenImg = document.createElement('div')
-                      fullscreenImg.className = 'fixed inset-0 z-50 bg-black/90 flex items-center justify-center cursor-pointer'
-                      fullscreenImg.onclick = () => fullscreenImg.remove()
+                      const overlay = document.createElement('div')
+                      overlay.className = 'fixed inset-0 z-50 bg-black/90 flex items-center justify-center cursor-pointer'
+                      overlay.onclick = () => overlay.remove()
                       const img = document.createElement('img')
                       img.src = randomFeedback.photo_url
                       img.className = 'max-w-[90vw] max-h-[90vh] object-contain'
-                      fullscreenImg.appendChild(img)
-                      document.body.appendChild(fullscreenImg)
+                      overlay.appendChild(img)
+                      document.body.appendChild(overlay)
                     }}
                   />
                 </div>
               )}
-              
-              {/* Winner Info Section */}
               <div className="flex-1 space-y-4 text-center md:text-left">
-                <p className="text-sm text-muted-foreground mb-2">Feliz sortudo(a) do mês:</p>
+                <p className="text-sm text-muted-foreground mb-2">Feliz sortudo(a):</p>
                 <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 mb-4">
                   <p className="text-3xl font-bold text-primary">{randomFeedback.to_name}</p>
                   {randomFeedback.to_setor && (
@@ -158,24 +248,25 @@ export function AwardsTab({
                   )}
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  {randomFeedback.categories && randomFeedback.categories.map((cat: string) => (
+                  {randomFeedback.categories?.map((cat: string) => (
                     <Badge key={cat} className="bg-primary/20 text-primary">{cat}</Badge>
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Reconhecido por: <span className="font-semibold text-foreground">{randomFeedback.from_name}</span>
+                  {'Reconhecido por: '}
+                  <span className="font-semibold text-foreground">{randomFeedback.from_name}</span>
                 </p>
                 {randomFeedback.reason && (
-                  <p className="text-xs text-muted-foreground italic">"{randomFeedback.reason}"</p>
+                  <p className="text-xs text-muted-foreground italic">{`"${randomFeedback.reason}"`}</p>
                 )}
                 <Button onClick={onDraw} variant="outline" className="mt-4 bg-transparent">
-                  Sortear Novamente 🎲
+                  {'Sortear Novamente'}
                 </Button>
               </div>
             </div>
           ) : (
             <div className="space-y-4 text-center">
-              <p className="text-muted-foreground mb-4">Clique no botão para realizar o sorteio</p>
+              <p className="text-muted-foreground mb-4">Clique no botao para realizar o sorteio</p>
               <Button onClick={onDraw} disabled={isDrawing} size="lg">
                 {isDrawing ? (
                   <>
@@ -183,7 +274,7 @@ export function AwardsTab({
                     Sorteando...
                   </>
                 ) : (
-                  'Realizar Sorteio 🎲'
+                  'Realizar Sorteio'
                 )}
               </Button>
             </div>
