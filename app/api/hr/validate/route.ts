@@ -56,7 +56,6 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Verify authentication via cookie token
     const token = request.cookies.get('hr_access_token')?.value
     const userResult = await getCurrentUser(token)
 
@@ -64,14 +63,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const feedbacks = await getPendingFeedbacks()
+    const page = Math.max(1, parseInt(request.nextUrl.searchParams.get('page') || '1', 10))
+    const result = await getPendingFeedbacks(page)
 
-    return NextResponse.json({ feedbacks })
+    return NextResponse.json(result)
   } catch (error) {
     console.error('[dev] Error fetching pending feedbacks:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

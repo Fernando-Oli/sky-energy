@@ -96,20 +96,33 @@ export async function submitFeedback(
   }
 }
 
-export async function getPendingFeedbacks(): Promise<any[]> {
+const PENDING_PAGE_SIZE = 10
+
+export async function getPendingFeedbacks(
+  page = 1
+): Promise<{ feedbacks: any[]; total: number; totalPages: number; page: number }> {
   try {
-    const { data, error } = await supabase
+    const from = (page - 1) * PENDING_PAGE_SIZE
+    const to = from + PENDING_PAGE_SIZE - 1
+
+    const { data, error, count } = await supabase
       .from('skyenergy_feedback')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
+      .range(from, to)
 
     if (error) throw error
 
-    return data || []
+    return {
+      feedbacks: data || [],
+      total: count ?? 0,
+      totalPages: Math.ceil((count ?? 0) / PENDING_PAGE_SIZE),
+      page,
+    }
   } catch (err) {
     console.error('Error fetching pending feedbacks:', err)
-    return []
+    return { feedbacks: [], total: 0, totalPages: 1, page }
   }
 }
 

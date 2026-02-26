@@ -1,12 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { InlineCategoryEditor } from '@/components/hr/inline-category-editor'
 import { PaginationControls } from '@/components/ui/pagination-controls'
-
-const PAGE_SIZE = 10
 
 interface Feedback {
   id: string
@@ -26,33 +23,36 @@ interface Feedback {
 
 interface ApprovedHistoryTabProps {
   approvedFeedbacks: Feedback[]
+  page: number
+  totalPages: number
+  total: number
+  onPageChange: (page: number) => void
   categoryColors: Record<string, string>
   onUpdateCategories: (feedbackId: string, categories: string[]) => Promise<void>
 }
 
 export function ApprovedHistoryTab({
   approvedFeedbacks,
+  page,
+  totalPages,
+  total,
+  onPageChange,
   categoryColors,
   onUpdateCategories,
 }: ApprovedHistoryTabProps) {
-  const [page, setPage] = useState(1)
-  const totalPages = Math.ceil(approvedFeedbacks.length / PAGE_SIZE)
-  const paginated = approvedFeedbacks.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">
         Histórico de Feedbacks
-        <span className="text-base font-normal text-muted-foreground ml-2">({approvedFeedbacks.length})</span>
+        <span className="text-base font-normal text-muted-foreground ml-2">({total})</span>
       </h2>
       <div className="space-y-4">
-        {paginated.map((feedback) => {
-          const isRejected = feedback.status === 'rejected' || feedback.rejected_at
-          
+        {approvedFeedbacks.map((feedback) => {
+          const isRejected = feedback.status === 'rejected' || !!feedback.rejected_at
+
           return (
             <Card key={feedback.id} className={`p-6 ${isRejected ? 'border-red-200 dark:border-red-900' : ''}`}>
               <div className="flex gap-6">
-                {/* Left Side - Content */}
                 <div className="flex-1 space-y-3">
                   <div className="flex items-start justify-between">
                     <div>
@@ -72,47 +72,41 @@ export function ApprovedHistoryTab({
                       {isRejected ? 'Rejeitado' : 'Aprovado'}
                     </Badge>
                   </div>
-                  
                   <InlineCategoryEditor
                     feedbackId={feedback.id}
                     currentCategories={feedback.categories}
                     categoryColors={categoryColors}
                     onUpdate={onUpdateCategories}
                   />
-                  
                   {feedback.reason && (
                     <p className="text-sm text-muted-foreground">{feedback.reason}</p>
                   )}
-                  
                   {isRejected && feedback.rejection_reason && (
                     <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-3">
                       <p className="text-xs font-semibold text-red-700 dark:text-red-300 mb-1">Motivo da rejeição:</p>
                       <p className="text-sm text-red-700 dark:text-red-300">{feedback.rejection_reason}</p>
                     </div>
                   )}
-                  
                   <p className="text-xs text-muted-foreground">
                     {isRejected ? 'Rejeitado em: ' : 'Aprovado em: '}
                     {new Date(feedback.rejected_at || feedback.approved_at || feedback.created_at).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
-                
-                {/* Right Side - Image */}
                 {feedback.photo_url && (
                   <div className="flex-shrink-0">
                     <img
-                      src={feedback.photo_url || "/placeholder.svg"}
+                      src={feedback.photo_url}
                       alt="Feedback"
                       className="w-40 h-40 object-contain rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-border"
                       onClick={() => {
-                        const fullscreenImg = document.createElement('div')
-                        fullscreenImg.className = 'fixed inset-0 z-50 bg-black/90 flex items-center justify-center cursor-pointer'
-                        fullscreenImg.onclick = () => fullscreenImg.remove()
+                        const el = document.createElement('div')
+                        el.className = 'fixed inset-0 z-50 bg-black/90 flex items-center justify-center cursor-pointer'
+                        el.onclick = () => el.remove()
                         const img = document.createElement('img')
-                        img.src = feedback.photo_url
+                        img.src = feedback.photo_url!
                         img.className = 'max-w-[90vw] max-h-[90vh] object-contain'
-                        fullscreenImg.appendChild(img)
-                        document.body.appendChild(fullscreenImg)
+                        el.appendChild(img)
+                        document.body.appendChild(el)
                       }}
                     />
                   </div>
@@ -125,9 +119,9 @@ export function ApprovedHistoryTab({
       <PaginationControls
         currentPage={page}
         totalPages={totalPages}
-        totalItems={approvedFeedbacks.length}
-        pageSize={PAGE_SIZE}
-        onPageChange={setPage}
+        totalItems={total}
+        pageSize={10}
+        onPageChange={onPageChange}
       />
     </div>
   )

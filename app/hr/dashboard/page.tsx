@@ -36,15 +36,19 @@ export default function ValidationPage() {
         />
 
         <DashboardStats
-          pendingCount={d.feedbacks.length}
+          pendingCount={d.feedbacksTotal}
           approvedCount={d.stats.approved}
           rejectedCount={d.stats.rejected}
         />
 
         {/* Pending */}
-        {d.activeTab === 'pending' && d.feedbacks.length > 0 && (
+        {d.activeTab === 'pending' && (
           <PendingFeedbacksTab
             feedbacks={d.feedbacks}
+            page={d.feedbacksPage}
+            totalPages={d.feedbacksTotalPages}
+            total={d.feedbacksTotal}
+            onPageChange={d.handleFeedbacksPageChange}
             actionLoading={d.actionLoading}
             categoryColors={categoryColors}
             onApprove={d.handleApprove}
@@ -87,6 +91,10 @@ export default function ValidationPage() {
         {d.activeTab === 'employees' && (
           <EmployeesManagerTab
             employees={d.employees}
+            page={d.employeesPage}
+            totalPages={d.employeesTotalPages}
+            total={d.employeesTotal}
+            onPageChange={d.handleEmployeesPageChange}
             newEmployeeName={d.newEmployeeName}
             newEmployeeSetor={d.newEmployeeSetor}
             editingEmployee={d.editingEmployee}
@@ -94,8 +102,6 @@ export default function ValidationPage() {
             onNewEmployeeSectorChange={d.setNewEmployeeSetor}
             onAddEmployee={d.handleAddEmployee}
             onEditingEmployeeChange={d.setEditingEmployee}
-            onEditingNameChange={(name) => d.setEditingEmployee({ ...d.editingEmployee!, nome: name })}
-            onEditingSectorChange={(sector) => d.setEditingEmployee({ ...d.editingEmployee!, setor: sector })}
             onUpdateEmployee={d.handleUpdateEmployee}
             onToggleEmployeeStatus={d.handleToggleEmployeeStatus}
           />
@@ -105,6 +111,10 @@ export default function ValidationPage() {
         {d.activeTab === 'history' && (
           <ApprovedHistoryTab
             approvedFeedbacks={d.approvedFeedbacks}
+            page={d.historyPage}
+            totalPages={d.historyTotalPages}
+            total={d.historyTotal}
+            onPageChange={d.handleHistoryPageChange}
             categoryColors={categoryColors}
             onUpdateCategories={d.handleUpdateCategories}
           />

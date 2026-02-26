@@ -53,6 +53,9 @@ export function useDashboard() {
 
   // Pending feedbacks
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
+  const [feedbacksPage, setFeedbacksPage] = useState(1)
+  const [feedbacksTotal, setFeedbacksTotal] = useState(0)
+  const [feedbacksTotalPages, setFeedbacksTotalPages] = useState(1)
   const [actionLoading, setActionLoading] = useState(false)
   const [stats, setStats] = useState({ approved: 0, rejected: 0 })
 
@@ -75,9 +78,15 @@ export function useDashboard() {
 
   // History
   const [approvedFeedbacks, setApprovedFeedbacks] = useState<Feedback[]>([])
+  const [historyPage, setHistoryPage] = useState(1)
+  const [historyTotal, setHistoryTotal] = useState(0)
+  const [historyTotalPages, setHistoryTotalPages] = useState(1)
 
   // Employees
   const [employees, setEmployees] = useState<any[]>([])
+  const [employeesPage, setEmployeesPage] = useState(1)
+  const [employeesTotal, setEmployeesTotal] = useState(0)
+  const [employeesTotalPages, setEmployeesTotalPages] = useState(1)
   const [newEmployeeName, setNewEmployeeName] = useState('')
   const [newEmployeeSetor, setNewEmployeeSetor] = useState('')
   const [editingEmployee, setEditingEmployee] = useState<any>(null)
@@ -108,9 +117,9 @@ export function useDashboard() {
   }, [router])
 
   // --- Fetchers ---
-  const fetchFeedbacks = async () => {
+  const fetchFeedbacks = async (page = 1) => {
     try {
-      const response = await fetch('/api/hr/validate')
+      const response = await fetch(`/api/hr/validate?page=${page}`)
       if (response.status === 401) {
         toast.error('Sessão expirada. Faça login novamente.')
         router.push('/hr/login')
@@ -119,6 +128,9 @@ export function useDashboard() {
       if (!response.ok) throw new Error('Failed to fetch feedbacks')
       const data = await response.json()
       setFeedbacks(data.feedbacks)
+      setFeedbacksTotal(data.total ?? 0)
+      setFeedbacksTotalPages(data.totalPages ?? 1)
+      setFeedbacksPage(page)
     } catch (error) {
       console.error('Error fetching feedbacks:', error)
       toast.error('Erro ao carregar feedbacks')
@@ -139,36 +151,34 @@ export function useDashboard() {
     }
   }
 
-  const fetchApprovedFeedbacks = async (monthYear: string) => {
+  const fetchApprovedFeedbacks = async (monthYear: string, page = 1) => {
     try {
-      const [approvedRes, rejectedRes] = await Promise.all([
-        fetch(`/api/hr/feedbacks?status=approved&month=${monthYear}`),
-        fetch(`/api/hr/feedbacks?status=rejected&month=${monthYear}`),
-      ])
-      if (approvedRes.ok && rejectedRes.ok) {
-        const approvedData = await approvedRes.json()
-        const rejectedData = await rejectedRes.json()
-        const approved = (approvedData.feedbacks || []).map((f: any) => ({ ...f, status: 'approved' }))
-        const rejected = (rejectedData.feedbacks || []).map((f: any) => ({ ...f, status: 'rejected' }))
-        setApprovedFeedbacks(
-          [...approved, ...rejected].sort(
-            (a, b) =>
-              new Date(b.approved_at || b.rejected_at || b.created_at).getTime() -
-              new Date(a.approved_at || a.rejected_at || a.created_at).getTime()
-          )
-        )
+      const response = await fetch(`/api/hr/feedbacks?month=${monthYear}&page=${page}`)
+      if (response.ok) {
+        const data = await response.json()
+        const mapped = (data.feedbacks || []).map((f: any) => ({
+          ...f,
+          status: f.status ?? (f.approved_at ? 'approved' : f.rejected_at ? 'rejected' : undefined),
+        }))
+        setApprovedFeedbacks(mapped)
+        setHistoryTotal(data.total ?? 0)
+        setHistoryTotalPages(data.totalPages ?? 1)
+        setHistoryPage(page)
       }
     } catch (error) {
       console.error('Error fetching feedbacks:', error)
     }
   }
 
-  const fetchEmployees = async () => {
+  const fetchEmployees = async (page = 1) => {
     try {
-      const response = await fetch('/api/employees/manage')
+      const response = await fetch(`/api/employees/manage?page=${page}`)
       if (response.ok) {
         const data = await response.json()
         setEmployees(data.employees || [])
+        setEmployeesTotal(data.total ?? 0)
+        setEmployeesTotalPages(data.totalPages ?? 1)
+        setEmployeesPage(page)
       }
     } catch (error) {
       console.error('Error fetching employees:', error)
@@ -421,12 +431,17 @@ export function useDashboard() {
     }
   }
 
+  // --- Page change handlers ---
+  const handleFeedbacksPageChange = (page: number) => fetchFeedbacks(page)
+  const handleHistoryPageChange = (page: number) => fetchApprovedFeedbacks(selectedMonth, page)
+  const handleEmployeesPageChange = (page: number) => fetchEmployees(page)
+
   // --- Tab switch side effects ---
   const switchTab = (tab: TabId) => {
     setActiveTab(tab)
-    if (tab === 'history') fetchApprovedFeedbacks(selectedMonth)
+    if (tab === 'history') fetchApprovedFeedbacks(selectedMonth, 1)
     if (tab === 'awards') fetchDashboardData(selectedMonth, dateRange)
-    if (tab === 'employees') fetchEmployees()
+    if (tab === 'employees') fetchEmployees(1)
   }
 
   return {
@@ -441,6 +456,10 @@ export function useDashboard() {
 
     // Pending
     feedbacks,
+    feedbacksPage,
+    feedbacksTotal,
+    feedbacksTotalPages,
+    handleFeedbacksPageChange,
     actionLoading,
     stats,
     handleApprove,
@@ -473,10 +492,18 @@ export function useDashboard() {
 
     // History
     approvedFeedbacks,
+    historyPage,
+    historyTotal,
+    historyTotalPages,
+    handleHistoryPageChange,
     handleRejectApproved,
 
     // Employees
     employees,
+    employeesPage,
+    employeesTotal,
+    employeesTotalPages,
+    handleEmployeesPageChange,
     newEmployeeName,
     setNewEmployeeName,
     newEmployeeSetor,

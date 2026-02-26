@@ -1,13 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { PaginationControls } from '@/components/ui/pagination-controls'
-
-const PAGE_SIZE = 15
 
 interface Employee {
   id: string
@@ -18,6 +15,10 @@ interface Employee {
 
 interface EmployeesManagerTabProps {
   employees: Employee[]
+  page: number
+  totalPages: number
+  total: number
+  onPageChange: (page: number) => void
   newEmployeeName: string
   newEmployeeSetor: string
   editingEmployee: Employee | null
@@ -25,14 +26,16 @@ interface EmployeesManagerTabProps {
   onNewEmployeeSectorChange: (sector: string) => void
   onAddEmployee: () => void
   onEditingEmployeeChange: (employee: Employee | null) => void
-  onEditingNameChange: (name: string) => void
-  onEditingSectorChange: (sector: string) => void
   onUpdateEmployee: (id: string, data: any) => void
   onToggleEmployeeStatus: (id: string, ativo: boolean) => void
 }
 
 export function EmployeesManagerTab({
   employees,
+  page,
+  totalPages,
+  total,
+  onPageChange,
   newEmployeeName,
   newEmployeeSetor,
   editingEmployee,
@@ -40,15 +43,9 @@ export function EmployeesManagerTab({
   onNewEmployeeSectorChange,
   onAddEmployee,
   onEditingEmployeeChange,
-  onEditingNameChange,
-  onEditingSectorChange,
   onUpdateEmployee,
   onToggleEmployeeStatus,
 }: EmployeesManagerTabProps) {
-  const [page, setPage] = useState(1)
-  const totalPages = Math.ceil(employees.length / PAGE_SIZE)
-  const paginated = employees.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-
   return (
     <div className="space-y-4">
       <Card className="p-6">
@@ -75,23 +72,19 @@ export function EmployeesManagerTab({
       <Card className="p-6">
         <h3 className="text-xl font-bold mb-4">
           Lista de Funcionários
-          <span className="text-base font-normal text-muted-foreground ml-2">({employees.length})</span>
+          <span className="text-base font-normal text-muted-foreground ml-2">({total})</span>
         </h3>
         <div className="space-y-2">
-          {paginated.map((emp) => (
+          {employees.map((emp) => (
             <div key={emp.id} className="flex items-center gap-2 p-3 border border-border rounded-lg">
               <div className="flex-1">
                 {editingEmployee?.id === emp.id ? (
                   <div className="space-y-2">
                     <Input
                       value={editingEmployee.nome}
-                      onChange={(e) =>
-                        onEditingEmployeeChange({ ...editingEmployee, nome: e.target.value })
-                      }
+                      onChange={(e) => onEditingEmployeeChange({ ...editingEmployee, nome: e.target.value })}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          onUpdateEmployee(emp.id, { nome: editingEmployee.nome, setor: editingEmployee.setor })
-                        }
+                        if (e.key === 'Enter') onUpdateEmployee(emp.id, { nome: editingEmployee.nome, setor: editingEmployee.setor })
                         if (e.key === 'Escape') onEditingEmployeeChange(null)
                       }}
                       placeholder="Nome"
@@ -99,13 +92,9 @@ export function EmployeesManagerTab({
                     />
                     <Input
                       value={editingEmployee.setor || ''}
-                      onChange={(e) =>
-                        onEditingEmployeeChange({ ...editingEmployee, setor: e.target.value })
-                      }
+                      onChange={(e) => onEditingEmployeeChange({ ...editingEmployee, setor: e.target.value })}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          onUpdateEmployee(emp.id, { nome: editingEmployee.nome, setor: editingEmployee.setor })
-                        }
+                        if (e.key === 'Enter') onUpdateEmployee(emp.id, { nome: editingEmployee.nome, setor: editingEmployee.setor })
                         if (e.key === 'Escape') onEditingEmployeeChange(null)
                       }}
                       placeholder="Setor"
@@ -121,20 +110,14 @@ export function EmployeesManagerTab({
                         {emp.ativo ? 'Ativo' : 'Inativo'}
                       </Badge>
                     </div>
-                    {emp.setor && (
-                      <div className="text-sm text-muted-foreground mt-1">{emp.setor}</div>
-                    )}
+                    {emp.setor && <div className="text-sm text-muted-foreground mt-1">{emp.setor}</div>}
                   </div>
                 )}
               </div>
-
               <div className="flex gap-2">
                 {editingEmployee?.id === emp.id ? (
                   <>
-                    <Button
-                      size="sm"
-                      onClick={() => onUpdateEmployee(emp.id, { nome: editingEmployee.nome, setor: editingEmployee.setor })}
-                    >
+                    <Button size="sm" onClick={() => onUpdateEmployee(emp.id, { nome: editingEmployee.nome, setor: editingEmployee.setor })}>
                       Salvar
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => onEditingEmployeeChange(null)}>
@@ -162,9 +145,9 @@ export function EmployeesManagerTab({
         <PaginationControls
           currentPage={page}
           totalPages={totalPages}
-          totalItems={employees.length}
-          pageSize={PAGE_SIZE}
-          onPageChange={setPage}
+          totalItems={total}
+          pageSize={15}
+          onPageChange={onPageChange}
         />
       </Card>
     </div>
