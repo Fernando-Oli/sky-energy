@@ -1,0 +1,144 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-in-out;
+  }
+}
+
+:root {
+  /* SkyLine Brand Colors */
+  --background: #FFFFFF;
+  --foreground: #1C1463;
+  --card: #FFFFFF;
+  --card-foreground: #1C1463;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1463;
+  --primary: #2824B4;
+  --primary-foreground: #FFFFFF;
+  --secondary: #80FFF8;
+  --secondary-foreground: #1C1463;
+  --muted: #F3F3F3;
+  --muted-foreground: #666666;
+  --accent: #80FFF8;
+  --accent-foreground: #1C1463;
+  --destructive: #FF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E0E0E0;
+  --input: #F9F9F9;
+  --ring: #2824B4;
+  --chart-1: #2824B4;
+  --chart-2: #80FFF8;
+  --chart-3: #1C1463;
+  --chart-4: #F9A825;
+  --chart-5: #7B68EE;
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-foreground: oklch(0.145 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-primary: oklch(0.205 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-primary-foreground: oklch(0.985 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-accent: oklch(0.97 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-accent-foreground: oklch(0.205 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-border: oklch(0.922 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-ring: oklch(0.708 0 0); /* Added from shadcn/ui defaults */
+}
+
+.dark {
+  --background: #080830;
+  --foreground: #80FFF8;
+  --card: #1C1463;
+  --card-foreground: #80FFF8;
+  --popover: #1C1463;
+  --popover-foreground: #80FFF8;
+  --primary: #80FFF8;
+  --primary-foreground: #1C1463;
+  --secondary: #2824B4;
+  --secondary-foreground: #80FFF8;
+  --muted: #2824B4;
+  --muted-foreground: #B0B0B0;
+  --accent: #80FFF8;
+  --accent-foreground: #1C1463;
+  --destructive: #FF6666;
+  --destructive-foreground: #080830;
+  --border: #2824B4;
+  --input: #1C1463;
+  --ring: #80FFF8;
+  --chart-1: #80FFF8;
+  --chart-2: #2824B4;
+  --chart-3: #7B68EE;
+  --chart-4: #F9A825;
+  --chart-5: #FF6B6B;
+  --sidebar: oklch(0.205 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-foreground: oklch(0.985 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-primary: oklch(0.488 0.243 264.376); /* Added from shadcn/ui defaults */
+  --sidebar-primary-foreground: oklch(0.985 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-accent: oklch(0.269 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-accent-foreground: oklch(0.985 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-border: oklch(0.269 0 0); /* Added from shadcn/ui defaults */
+  --sidebar-ring: oklch(0.439 0 0); /* Added from shadcn/ui defaults */
+}
+
+@theme inline {
+  --font-sans: 'Galano', 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  /* shadcn/ui color mappings for @theme inline */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
