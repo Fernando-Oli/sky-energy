@@ -4,8 +4,7 @@ import React from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Loader2 } from 'lucide-react'
-import { TopSenders } from '@/components/hr/top-senders'
+import { Loader2, Send } from 'lucide-react'
 
 interface Champion {
   winners: string[]
@@ -90,11 +89,37 @@ export function AwardsTab({
               )}
             </Card>
           ))}
+
+          {/* Mais Envios card — same visual pattern as category cards */}
+          {topSenders.length > 0 && (
+            <Card className="p-6">
+              <div className="mb-4">
+                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 flex items-center gap-1.5 w-fit">
+                  <Send className="w-3 h-3" />
+                  Mais Envios
+                </Badge>
+              </div>
+              <div className="space-y-3">
+                {topSenders.slice(0, 3).map((sender, index) => {
+                  const medals = ['🥇', '🥈', '🥉']
+                  return (
+                    <div key={sender.from_name} className="flex items-baseline justify-between">
+                      <p className="text-xl font-bold text-foreground flex items-center gap-2">
+                        <span className="text-base">{medals[index]}</span>
+                        {sender.from_name}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-2xl font-bold text-primary">{sender.count}</p>
+                        <p className="text-sm text-muted-foreground">enviados</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </Card>
+          )}
         </div>
       </div>
-
-      {/* Top Senders Section */}
-      <TopSenders senders={topSenders} selectedMonth={selectedMonth} />
 
       {/* Random Draw Section */}
       <div className="mb-8">

@@ -4,7 +4,7 @@ Documentação sobre a estratégia e execução de testes da aplicação.
 
 ## Estrutura de Testes
 
-```
+\`\`\`
 tests/
 ├── unit/                           # Testes unitários
 │   ├── photo-upload.test.ts       # Testes de compressão de imagem
@@ -12,7 +12,7 @@ tests/
 ├── integration/                    # Testes de integração
 │   └── feedback-flow.test.ts      # Testes de fluxo completo
 └── README.md                       # Este arquivo
-```
+\`\`\`
 
 ## Tipos de Testes
 
@@ -48,13 +48,13 @@ Para executar os testes, você precisará configurar um test runner como Jest ou
 
 #### Opção 1: Jest
 
-```bash
+\`\`\`bash
 bun add -d jest @types/jest ts-jest
-```
+\`\`\`
 
 Crie `jest.config.js`:
 
-```javascript
+\`\`\`javascript
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -64,17 +64,17 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/$1'
   }
 }
-```
+\`\`\`
 
 #### Opção 2: Vitest (Recomendado)
 
-```bash
+\`\`\`bash
 bun add -d vitest @vitest/ui
-```
+\`\`\`
 
 Crie `vitest.config.ts`:
 
-```typescript
+\`\`\`typescript
 import { defineConfig } from 'vitest/config'
 import path from 'path'
 
@@ -89,13 +89,13 @@ export default defineConfig({
     }
   }
 })
-```
+\`\`\`
 
 ### Comandos
 
 Adicione ao `package.json`:
 
-```json
+\`\`\`json
 {
   "scripts": {
     "test": "vitest",
@@ -104,11 +104,11 @@ Adicione ao `package.json`:
     "test:coverage": "vitest run --coverage"
   }
 }
-```
+\`\`\`
 
 Execute:
 
-```bash
+\`\`\`bash
 # Modo watch
 bun test
 
@@ -120,7 +120,7 @@ bun test:ui
 
 # Com coverage
 bun test:coverage
-```
+\`\`\`
 
 ## Testes Implementados
 
@@ -230,7 +230,7 @@ Testa fluxo completo de feedback:
 
 ### Template de Teste Unitário
 
-```typescript
+\`\`\`typescript
 /**
  * Unit Tests - [Feature Name]
  * [Description]
@@ -248,11 +248,11 @@ describe('[Feature]', () => {
     expect(result).toBe('expected')
   })
 })
-```
+\`\`\`
 
 ### Template de Teste de Integração
 
-```typescript
+\`\`\`typescript
 /**
  * Integration Tests - [Flow Name]
  * [Description]
@@ -272,13 +272,13 @@ describe('[Flow]', () => {
     })
   })
 })
-```
+\`\`\`
 
 ## Mocking
 
 ### Dados de Teste
 
-```typescript
+\`\`\`typescript
 // Mock Employees
 const mockEmployees = [
   { id: '1', nome: 'João Silva', setor: 'TI', ativo: true },
@@ -294,11 +294,11 @@ const mockFeedback = {
   reason: 'Ótimo trabalho',
   status: 'pending'
 }
-```
+\`\`\`
 
 ### APIs Mock
 
-```typescript
+\`\`\`typescript
 // Mock fetch
 global.fetch = jest.fn(() =>
   Promise.resolve({
@@ -315,13 +315,13 @@ jest.mock('@/lib/supabase', () => ({
     }))
   }
 }))
-```
+\`\`\`
 
 ## CI/CD
 
 ### GitHub Actions (Exemplo)
 
-```yaml
+\`\`\`yaml
 name: Tests
 
 on: [push, pull_request]
@@ -342,7 +342,7 @@ jobs:
       
       - name: Upload coverage
         uses: codecov/codecov-action@v3
-```
+\`\`\`
 
 ## Boas Práticas
 
@@ -367,31 +367,31 @@ jobs:
 
 ### Logs
 
-```typescript
+\`\`\`typescript
 test('should debug test', () => {
   const result = complexFunction()
   console.log('Result:', result) // Debug output
   expect(result).toBeDefined()
 })
-```
+\`\`\`
 
 ### Breakpoints
 
 Use `debugger` ou `--inspect`:
 
-```bash
+\`\`\`bash
 node --inspect node_modules/.bin/vitest
-```
+\`\`\`
 
 ### Isolated Run
 
-```bash
+\`\`\`bash
 # Rodar teste específico
 bun test photo-upload
 
 # Rodar apenas um test
 bun test -t "should compress image"
-```
+\`\`\`
 
 ## Recursos
 

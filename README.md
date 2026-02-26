@@ -25,10 +25,10 @@ Um sistema inovador de reconhecimento entre colegas que digitaliza o processo de
 
 Adicione as seguintes variáveis no arquivo `.env.local`:
 
-```
+\`\`\`
 NEXT_PUBLIC_SUPABASE_URL=sua_url_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anonima
-```
+\`\`\`
 
 Você pode encontrar estas informações no seu projeto Supabase em Settings → API.
 
@@ -40,7 +40,7 @@ As migrações SQL já estão configuradas em `/scripts/`. Você pode executar m
 
 No Supabase SQL Editor, execute:
 
-```sql
+\`\`\`sql
 -- Crie um usuário RH (use um email e senha reais)
 INSERT INTO hr_users (email, password_hash, name, is_active) VALUES (
   'rh@empresa.com',
@@ -48,7 +48,7 @@ INSERT INTO hr_users (email, password_hash, name, is_active) VALUES (
   'RH Manager',
   true
 );
-```
+\`\`\`
 
 **Importante**: Você precisará fazer hash da senha. Use a função de hashing do Node.js ou peça ajuda ao dev.
 
@@ -143,7 +143,7 @@ Um feedback aleatório é sorteado entre todos os aprovados do mês.
 
 ## 🛠️ Estrutura de Pastas
 
-```
+\`\`\`
 /app
   /api
     /feedback          - Submit feedback
@@ -166,11 +166,11 @@ Um feedback aleatório é sorteado entre todos os aprovados do mês.
 /scripts
   /setup-skyenergy.sql - Main database schema
   /setup-storage.sql  - Storage bucket setup
-```
+\`\`\`
 
 ## 🔄 Fluxo de Dados
 
-```
+\`\`\`
 Colaborador tira foto
     ↓
 Acessa /submit
@@ -195,7 +195,7 @@ POST /api/hr/validate
 Dashboard agregará dados de feedbacks 'approved'
     ↓
 Campeões e sorteio visíveis em /dashboard
-```
+\`\`\`
 
 ## 📝 Notas Importantes
 

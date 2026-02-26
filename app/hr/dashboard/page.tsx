@@ -21,7 +21,6 @@ import { ApprovedHistoryTab } from '@/components/hr/tabs/approved-history-tab'
 import { EmployeesManagerTab } from '@/components/hr/tabs/employees-manager-tab'
 import { ChampionsHistoryTab } from '@/components/hr/tabs/champions-history-tab'
 import { AwardsTab } from '@/components/hr/tabs/awards-tab'
-import { TopSenders } from '@/components/hr/top-senders'
 
 interface Feedback {
   id: string
@@ -580,11 +579,6 @@ export default function ValidationPage() {
             <p className="text-3xl font-bold text-destructive">{stats.rejected}</p>
           </Card>
         </div>
-
-        {/* Top Senders Section */}
-        {!showApprovedHistory && !showEmployeesManager && !showBugsManager && !showAwardsTab && (
-          <TopSenders senders={topSenders} selectedMonth={selectedMonth} />
-        )}
 
         {/* Pending Feedbacks Section */}
         {!showApprovedHistory && !showEmployeesManager && !showBugsManager && !showAwardsTab && feedbacks.length > 0 && (
