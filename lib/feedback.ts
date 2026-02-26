@@ -162,15 +162,24 @@ export async function rejectFeedback(
   }
 }
 
-export async function getMonthlyChampions(monthYear: string): Promise<Record<string, any>> {
+export async function getMonthlyChampions(
+  monthYear: string,
+  startDate?: string,
+  endDate?: string
+): Promise<Record<string, any>> {
   try {
-    console.log('[dev] Fetching champions for month:', monthYear)
-    
-    const { data, error } = await supabase
+    let query = supabase
       .from('skyenergy_feedback')
       .select('*')
       .eq('status', 'approved')
-      .eq('month_year', monthYear)
+
+    if (startDate && endDate) {
+      query = query.gte('created_at', startDate).lte('created_at', endDate)
+    } else {
+      query = query.eq('month_year', monthYear)
+    }
+
+    const { data, error } = await query
 
     if (error) {
       console.error('[dev] Error fetching approved feedbacks:', error)
@@ -226,13 +235,24 @@ export async function getMonthlyChampions(monthYear: string): Promise<Record<str
   }
 }
 
-export async function getRandomFeedback(monthYear: string): Promise<any> {
+export async function getRandomFeedback(
+  monthYear: string,
+  startDate?: string,
+  endDate?: string
+): Promise<any> {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('skyenergy_feedback')
       .select('*')
       .eq('status', 'approved')
-      .eq('month_year', monthYear)
+
+    if (startDate && endDate) {
+      query = query.gte('created_at', startDate).lte('created_at', endDate)
+    } else {
+      query = query.eq('month_year', monthYear)
+    }
+
+    const { data, error } = await query
 
     if (error) throw error
 

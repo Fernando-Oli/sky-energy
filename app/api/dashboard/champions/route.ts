@@ -4,15 +4,21 @@ import { getMonthlyChampions } from '@/lib/feedback'
 export async function GET(request: NextRequest) {
   try {
     const monthYear = request.nextUrl.searchParams.get('monthYear')
+    const startDate = request.nextUrl.searchParams.get('startDate')
+    const endDate = request.nextUrl.searchParams.get('endDate')
 
-    if (!monthYear) {
+    if (!monthYear && !startDate) {
       return NextResponse.json(
-        { error: 'monthYear parameter required' },
+        { error: 'monthYear or startDate/endDate required' },
         { status: 400 }
       )
     }
 
-    const champions = await getMonthlyChampions(monthYear)
+    const champions = await getMonthlyChampions(
+      monthYear || '',
+      startDate || undefined,
+      endDate || undefined
+    )
 
     return NextResponse.json({ champions })
   } catch (error) {

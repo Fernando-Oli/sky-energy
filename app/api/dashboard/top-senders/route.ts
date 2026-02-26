@@ -4,16 +4,25 @@ import { supabase } from '@/lib/supabase'
 export async function GET(request: NextRequest) {
   try {
     const monthYear = request.nextUrl.searchParams.get('monthYear')
+    const startDate = request.nextUrl.searchParams.get('startDate')
+    const endDate = request.nextUrl.searchParams.get('endDate')
 
-    if (!monthYear) {
-      return NextResponse.json({ error: 'monthYear parameter required' }, { status: 400 })
+    if (!monthYear && !startDate) {
+      return NextResponse.json({ error: 'monthYear or startDate/endDate required' }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('skyenergy_feedback')
       .select('from_name')
       .eq('status', 'approved')
-      .eq('month_year', monthYear)
+
+    if (startDate && endDate) {
+      query = query.gte('created_at', startDate).lte('created_at', endDate)
+    } else {
+      query = query.eq('month_year', monthYear!)
+    }
+
+    const { data, error } = await query
 
     if (error) throw error
 

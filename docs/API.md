@@ -26,7 +26,7 @@ A aplicação utiliza Supabase para gerenciamento de dados. Todas as requisiçõ
 Retorna lista de funcionários ativos.
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "employees": [
     {
@@ -36,7 +36,7 @@ Retorna lista de funcionários ativos.
     }
   ]
 }
-```
+\`\`\`
 
 ---
 
@@ -45,7 +45,7 @@ Retorna lista de funcionários ativos.
 Retorna todos os funcionários (incluindo inativos) para o painel de RH.
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "employees": [
     {
@@ -57,7 +57,7 @@ Retorna todos os funcionários (incluindo inativos) para o painel de RH.
     }
   ]
 }
-```
+\`\`\`
 
 ---
 
@@ -66,15 +66,15 @@ Retorna todos os funcionários (incluindo inativos) para o painel de RH.
 Cria um novo funcionário.
 
 **Body:**
-```json
+\`\`\`json
 {
   "nome": "João Silva",
   "setor": "TI"
 }
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "employee": {
     "id": "uuid",
@@ -84,7 +84,7 @@ Cria um novo funcionário.
     "created_at": "2024-01-01T00:00:00Z"
   }
 }
-```
+\`\`\`
 
 **Erros:**
 - `400` - Nome é obrigatório
@@ -97,17 +97,17 @@ Cria um novo funcionário.
 Atualiza dados de um funcionário.
 
 **Body:**
-```json
+\`\`\`json
 {
   "id": "uuid",
   "nome": "João Silva Atualizado",
   "setor": "TI",
   "ativo": true
 }
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "employee": {
     "id": "uuid",
@@ -117,7 +117,7 @@ Atualiza dados de um funcionário.
   },
   "success": true
 }
-```
+\`\`\`
 
 **Erros:**
 - `400` - ID é obrigatório
@@ -131,18 +131,18 @@ Atualiza dados de um funcionário.
 Desativa um funcionário (soft delete).
 
 **Body:**
-```json
+\`\`\`json
 {
   "id": "uuid"
 }
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "success": true
 }
-```
+\`\`\`
 
 ---
 
@@ -163,7 +163,7 @@ Envia um novo feedback.
 - `sessionId` (string, required) - ID da sessão
 
 **Exemplo:**
-```javascript
+\`\`\`javascript
 const formData = new FormData()
 formData.append('fromName', 'João Silva')
 formData.append('toName', 'Maria Santos')
@@ -171,15 +171,15 @@ formData.append('categories', JSON.stringify(['Colaboração', 'Proatividade']))
 formData.append('reason', 'Excelente trabalho em equipe')
 formData.append('photo', photoFile)
 formData.append('sessionId', sessionId)
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "feedbackId": "uuid",
   "message": "Feedback enviado com sucesso"
 }
-```
+\`\`\`
 
 **Erros:**
 - `400` - Campos obrigatórios faltando
@@ -196,7 +196,7 @@ formData.append('sessionId', sessionId)
 Retorna feedbacks pendentes de aprovação.
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "feedbacks": [
     {
@@ -213,7 +213,7 @@ Retorna feedbacks pendentes de aprovação.
     }
   ]
 }
-```
+\`\`\`
 
 ---
 
@@ -222,18 +222,18 @@ Retorna feedbacks pendentes de aprovação.
 Aprova um feedback.
 
 **Body:**
-```json
+\`\`\`json
 {
   "feedbackId": "uuid"
 }
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "success": true
 }
-```
+\`\`\`
 
 ---
 
@@ -242,25 +242,25 @@ Aprova um feedback.
 Rejeita um feedback.
 
 **Body:**
-```json
+\`\`\`json
 {
   "feedbackId": "uuid"
 }
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "success": true
 }
-```
+\`\`\`
 
 ---
 
 ## Modelos de Dados
 
 ### Funcionário (Employee)
-```typescript
+\`\`\`typescript
 interface Employee {
   id: string            // UUID
   nome: string          // Nome completo
@@ -268,10 +268,10 @@ interface Employee {
   ativo: boolean        // Status ativo/inativo
   created_at: string    // Data de criação (ISO 8601)
 }
-```
+\`\`\`
 
 ### Feedback
-```typescript
+\`\`\`typescript
 interface Feedback {
   id: string                    // UUID
   from_name: string             // Nome de quem envia
@@ -285,7 +285,7 @@ interface Feedback {
   session_id: string            // ID da sessão
   created_at: string            // Data de criação
 }
-```
+\`\`\`
 
 ### Categorias Disponíveis
 - Colaboração
@@ -355,7 +355,7 @@ Todas as imagens enviadas são automaticamente:
 
 ### Enviar Feedback (Client-side)
 
-```typescript
+\`\`\`typescript
 const submitFeedback = async (data: FeedbackData) => {
   const formData = new FormData()
   formData.append('fromName', data.fromName)
@@ -377,21 +377,21 @@ const submitFeedback = async (data: FeedbackData) => {
 
   return response.json()
 }
-```
+\`\`\`
 
 ### Buscar Funcionários Ativos
 
-```typescript
+\`\`\`typescript
 const fetchEmployees = async () => {
   const response = await fetch('/api/employees')
   const data = await response.json()
   return data.employees
 }
-```
+\`\`\`
 
 ### Aprovar Feedback
 
-```typescript
+\`\`\`typescript
 const approveFeedback = async (feedbackId: string) => {
   const response = await fetch('/api/dashboard/approve', {
     method: 'POST',
@@ -401,4 +401,4 @@ const approveFeedback = async (feedbackId: string) => {
 
   return response.json()
 }
-```
+\`\`\`

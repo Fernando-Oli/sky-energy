@@ -24,7 +24,7 @@ Componente de autocomplete para seleção de funcionários com busca e exibiçã
 
 #### Props
 
-```typescript
+\`\`\`typescript
 interface EmployeeAutocompleteProps {
   label: string                           // Label do campo
   value: string                           // Valor atual do input
@@ -41,11 +41,11 @@ interface Employee {
   nome: string
   setor: string | null
 }
-```
+\`\`\`
 
 #### Uso
 
-```tsx
+\`\`\`tsx
 <EmployeeAutocomplete
   label="De:"
   value={fromName}
@@ -56,7 +56,7 @@ interface Employee {
   onClose={() => setShowFromSuggestions(false)}
   required
 />
-```
+\`\`\`
 
 #### Comportamento
 
@@ -77,7 +77,7 @@ Componente completo para captura/seleção de fotos com compressão automática.
 
 #### Props
 
-```typescript
+\`\`\`typescript
 interface PhotoUploadProps {
   photoPreview: string                           // URL do preview
   photoSizeWarning: string                       // Mensagem de aviso
@@ -85,11 +85,11 @@ interface PhotoUploadProps {
   onPhotoFromWebcam: (file: File) => void       // Callback captura webcam
   onRemovePhoto: () => void                      // Callback remover foto
 }
-```
+\`\`\`
 
 #### Uso
 
-```tsx
+\`\`\`tsx
 <PhotoUpload
   photoPreview={photoPreview}
   photoSizeWarning={photoSizeWarning}
@@ -100,7 +100,7 @@ interface PhotoUploadProps {
     setPhotoPreview('')
   }}
 />
-```
+\`\`\`
 
 #### Funcionalidades
 
@@ -122,7 +122,7 @@ interface PhotoUploadProps {
 
 #### Exemplo de Compressão
 
-```typescript
+\`\`\`typescript
 // Implementação interna
 const compressImage = async (file: File): Promise<File> => {
   const img = new Image()
@@ -156,7 +156,7 @@ const compressImage = async (file: File): Promise<File> => {
   
   return new File([blob], 'photo.webp', { type: 'image/webp' })
 }
-```
+\`\`\`
 
 ---
 
@@ -168,25 +168,25 @@ Componente para seleção múltipla de categorias de feedback.
 
 #### Props
 
-```typescript
+\`\`\`typescript
 interface CategorySelectorProps {
   selectedCategories: string[]           // Categorias selecionadas
   onToggleCategory: (category: string) => void  // Callback toggle
 }
-```
+\`\`\`
 
 #### Uso
 
-```tsx
+\`\`\`tsx
 <CategorySelector
   selectedCategories={selectedCategories}
   onToggleCategory={toggleCategory}
 />
-```
+\`\`\`
 
 #### Categorias Disponíveis
 
-```typescript
+\`\`\`typescript
 const CATEGORIES = [
   'Colaboração',
   'Proatividade',
@@ -197,7 +197,7 @@ const CATEGORIES = [
   'Comunicação',
   'Comprometimento'
 ]
-```
+\`\`\`
 
 #### Comportamento
 
@@ -218,7 +218,7 @@ Componente completo para gerenciamento CRUD de funcionários.
 
 #### Props
 
-```typescript
+\`\`\`typescript
 interface EmployeeManagerProps {
   employees: Employee[]
   onAddEmployee: (nome: string, setor: string) => Promise<void>
@@ -233,18 +233,18 @@ interface Employee {
   ativo: boolean
   created_at: string
 }
-```
+\`\`\`
 
 #### Uso
 
-```tsx
+\`\`\`tsx
 <EmployeeManager
   employees={employees}
   onAddEmployee={handleAddEmployee}
   onUpdateEmployee={handleUpdateEmployee}
   onToggleStatus={handleToggleEmployeeStatus}
 />
-```
+\`\`\`
 
 #### Funcionalidades
 
@@ -278,7 +278,7 @@ Componente para exibição de card de feedback com ações.
 
 #### Props
 
-```typescript
+\`\`\`typescript
 interface FeedbackCardProps {
   feedback: Feedback
   onApprove: (id: string) => Promise<void>
@@ -298,18 +298,18 @@ interface Feedback {
   status: 'pending' | 'approved' | 'rejected'
   created_at: string
 }
-```
+\`\`\`
 
 #### Uso
 
-```tsx
+\`\`\`tsx
 <FeedbackCard
   feedback={feedback}
   onApprove={handleApproveFeedback}
   onReject={handleRejectFeedback}
   showActions={true}
 />
-```
+\`\`\`
 
 #### Funcionalidades
 
@@ -339,23 +339,23 @@ interface Feedback {
 ### Estado Local vs Props
 
 **Estado Local**: Use para UI state (hover, focus, loading)
-```tsx
+\`\`\`tsx
 const [isHovered, setIsHovered] = useState(false)
-```
+\`\`\`
 
 **Props**: Use para dados e callbacks
-```tsx
+\`\`\`tsx
 interface Props {
   data: DataType
   onChange: (value: string) => void
 }
-```
+\`\`\`
 
 ### Validação
 
 Sempre valide no componente E no servidor:
 
-```tsx
+\`\`\`tsx
 // Component
 const isValid = value.trim().length > 0
 
@@ -363,13 +363,13 @@ const isValid = value.trim().length > 0
 if (!nome || !nome.trim()) {
   return NextResponse.json({ error: 'Nome obrigatório' }, { status: 400 })
 }
-```
+\`\`\`
 
 ### Error Handling
 
 Use toast para feedback ao usuário:
 
-```tsx
+\`\`\`tsx
 try {
   await action()
   toast.success('Sucesso!')
@@ -377,32 +377,32 @@ try {
   toast.error('Erro ao processar')
   console.error('[dev]', error)
 }
-```
+\`\`\`
 
 ### Loading States
 
 Desabilite ações durante loading:
 
-```tsx
+\`\`\`tsx
 const [isLoading, setIsLoading] = useState(false)
 
 <Button disabled={isLoading}>
   {isLoading ? 'Carregando...' : 'Enviar'}
 </Button>
-```
+\`\`\`
 
 ### Accessibility
 
 Sempre inclua labels e ARIA attributes:
 
-```tsx
+\`\`\`tsx
 <Label htmlFor="input-id">Campo</Label>
 <Input
   id="input-id"
   aria-required="true"
   aria-describedby="help-text"
 />
-```
+\`\`\`
 
 ---
 
@@ -410,7 +410,7 @@ Sempre inclua labels e ARIA attributes:
 
 Para testar componentes:
 
-```typescript
+\`\`\`typescript
 // Unit test example
 describe('EmployeeAutocomplete', () => {
   test('should filter suggestions', () => {
@@ -428,7 +428,7 @@ describe('EmployeeAutocomplete', () => {
     expect(filtered[0].nome).toBe('João')
   })
 })
-```
+\`\`\`
 
 ---
 

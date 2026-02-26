@@ -37,7 +37,7 @@ O SkyEnergy é uma plataforma web que permite aos funcionários reconhecerem uns
 
 ## Estrutura do Projeto
 
-```
+\`\`\`
 ├── app/
 │   ├── api/                    # API Routes
 │   │   ├── employees/          # Endpoints de funcionários
@@ -66,7 +66,7 @@ O SkyEnergy é uma plataforma web que permite aos funcionários reconhecerem uns
 └── tests/                      # Testes
     ├── unit/                   # Testes unitários
     └── integration/            # Testes de integração
-```
+\`\`\`
 
 ## Instalação e Configuração
 
@@ -78,23 +78,23 @@ O SkyEnergy é uma plataforma web que permite aos funcionários reconhecerem uns
 ### Instalação
 
 1. Clone o repositório:
-```bash
+\`\`\`bash
 git clone <repository-url>
 cd sky-energy
-```
+\`\`\`
 
 2. Instale as dependências:
-```bash
+\`\`\`bash
 bun install
 # ou
 npm install
-```
+\`\`\`
 
 3. Configure as variáveis de ambiente:
 
 Crie um arquivo `.env.local` na raiz do projeto:
 
-```env
+\`\`\`env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
@@ -102,13 +102,13 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # Vercel Blob (opcional, para produção)
 BLOB_READ_WRITE_TOKEN=your-blob-token
-```
+\`\`\`
 
 4. Configure o banco de dados:
 
 Execute os scripts SQL em ordem no Supabase SQL Editor:
 
-```sql
+\`\`\`sql
 -- 1. Criar tabela de funcionários
 -- Ver: /scripts/create-employees-table.sql
 
@@ -117,14 +117,14 @@ Execute os scripts SQL em ordem no Supabase SQL Editor:
 
 -- 3. Criar tabela de feedbacks
 -- Ver: /scripts/create-feedbacks-table.sql
-```
+\`\`\`
 
 5. Execute o projeto em desenvolvimento:
-```bash
+\`\`\`bash
 bun dev
 # ou
 npm run dev
-```
+\`\`\`
 
 Acesse `http://localhost:3000`
 
@@ -139,12 +139,12 @@ Acesse `http://localhost:3000`
 
 ### Variáveis de Ambiente de Produção
 
-```env
+\`\`\`env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 BLOB_READ_WRITE_TOKEN=
-```
+\`\`\`
 
 ## Uso
 
