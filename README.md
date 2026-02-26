@@ -2,7 +2,7 @@
 
 Um sistema inovador de reconhecimento entre colegas que digitaliza o processo de feedback em papel, adicionando validação, categorização e premiação mensal.
 
-## 🎯 Funcionalidades
+## 🎯 Funcionalidades ##
 
 ### Para Colaboradores
 - **Envio de Feedback**: Tirar foto do papel + preencher dados (opcional)
