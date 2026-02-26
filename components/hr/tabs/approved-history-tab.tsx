@@ -1,8 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { InlineCategoryEditor } from '@/components/hr/inline-category-editor'
+import { PaginationControls } from '@/components/ui/pagination-controls'
+
+const PAGE_SIZE = 10
 
 interface Feedback {
   id: string
@@ -31,11 +35,18 @@ export function ApprovedHistoryTab({
   categoryColors,
   onUpdateCategories,
 }: ApprovedHistoryTabProps) {
+  const [page, setPage] = useState(1)
+  const totalPages = Math.ceil(approvedFeedbacks.length / PAGE_SIZE)
+  const paginated = approvedFeedbacks.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Histórico de Feedbacks (Aprovados e Rejeitados)</h2>
+      <h2 className="text-2xl font-bold mb-6">
+        Histórico de Feedbacks
+        <span className="text-base font-normal text-muted-foreground ml-2">({approvedFeedbacks.length})</span>
+      </h2>
       <div className="space-y-4">
-        {approvedFeedbacks.map((feedback) => {
+        {paginated.map((feedback) => {
           const isRejected = feedback.status === 'rejected' || feedback.rejected_at
           
           return (
@@ -111,6 +122,13 @@ export function ApprovedHistoryTab({
           )
         })}
       </div>
+      <PaginationControls
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={approvedFeedbacks.length}
+        pageSize={PAGE_SIZE}
+        onPageChange={setPage}
+      />
     </div>
   )
 }

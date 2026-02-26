@@ -1,9 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { PaginationControls } from '@/components/ui/pagination-controls'
+
+const PAGE_SIZE = 15
 
 interface Employee {
   id: string
@@ -41,6 +45,10 @@ export function EmployeesManagerTab({
   onUpdateEmployee,
   onToggleEmployeeStatus,
 }: EmployeesManagerTabProps) {
+  const [page, setPage] = useState(1)
+  const totalPages = Math.ceil(employees.length / PAGE_SIZE)
+  const paginated = employees.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
   return (
     <div className="space-y-4">
       <Card className="p-6">
@@ -65,9 +73,12 @@ export function EmployeesManagerTab({
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-xl font-bold mb-4">Lista de Funcionários</h3>
+        <h3 className="text-xl font-bold mb-4">
+          Lista de Funcionários
+          <span className="text-base font-normal text-muted-foreground ml-2">({employees.length})</span>
+        </h3>
         <div className="space-y-2">
-          {employees.map((emp) => (
+          {paginated.map((emp) => (
             <div key={emp.id} className="flex items-center gap-2 p-3 border border-border rounded-lg">
               <div className="flex-1">
                 {editingEmployee?.id === emp.id ? (
@@ -148,6 +159,13 @@ export function EmployeesManagerTab({
             </div>
           ))}
         </div>
+        <PaginationControls
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={employees.length}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
       </Card>
     </div>
   )
